@@ -1,56 +1,38 @@
 /*
- * Copyright (c) 2024 Joel Guittet
- * SPDX-License-Identifier: Apache-2.0
- */
+* Copyright (c) 2024 Joel Guittet
+* SPDX-License-Identifier: Apache-2.0
+*/
 
 /dts-v1/;
-#include <espressif/esp32s3/esp32s3_wroom_n8r8.dtsi>
+#include <espressif/esp32s3/esp32s3_wroom_n16r8.dtsi>
 #include "esp32s3_1_47_tft-pinctrl.dtsi"
 #include <zephyr/dt-bindings/display/panel.h>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 #include <zephyr/dt-bindings/pwm/pwm.h>
-#include <espressif/partitions_0x0_amp_8M.dtsi>
+#include <espressif/partitions_0x0_amp_16M.dtsi>
 
 / {
 	model = "ESP32-S3-1.47-TFT PROCPU";
 	compatible = "waveshare,esp32-s3-1.47-tft";
-
+	
+	chosen {
+		zephyr,sram = &sram1;
+		zephyr,console = &usb_serial;
+		zephyr,shell-uart = &usb_serial;
+		zephyr,flash = &flash0;
+		zephyr,code-partition = &slot0_partition;
+		zephyr,display = &st7789v_st7789v_waveshare_172_320;
+		zephyr,bt-hci = &esp32_bt_hci;
+	};
+	
 	aliases {
 		i2c-1 = &i2c1;
 		pwm-0 = &ledc0;
 		pwm-lcd0 = &pwm_lcd0;
-		sw0 = &button0;
 		uart-0 = &uart0;
 		watchdog0 = &wdt0;
 	};
-
-	chosen {
-		zephyr,sram = &sram1;
-		zephyr,console = &uart0;
-		zephyr,shell-uart = &uart0;
-		zephyr,flash = &flash0;
-		zephyr,code-partition = &slot0_partition;
-		zephyr,display = &gc9a01;
-		zephyr,bt-hci = &esp32_bt_hci;
-		zephyr,touch = &cst816s;
-	};
-
-	/* Buttons */
-	buttons {
-		compatible = "gpio-keys";
-		button0: button_0 {
-			gpios = <&gpio0 0 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
-			label = "BOOT Button";
-			zephyr,code = <INPUT_KEY_0>;
-		};
-	};
-
-	/* Touch Controller */
-	lvgl_pointer {
-		compatible = "zephyr,lvgl-pointer-input";
-		input = <&cst816s>;
-	};
-
+	
 	/* PWM */
 	pwmleds {
 		compatible = "pwm-leds";
@@ -58,32 +40,60 @@
 			pwms = <&ledc0 0 PWM_HZ(250) PWM_POLARITY_NORMAL>;
 		};
 	};
-
+	
+	zephyr,user {
+		tft_led-gpios = <&gpio1 16 GPIO_ACTIVE_HIGH>;
+	};
+	
 	/* MIPI DBI */
-	mipi_dbi {
+	mipi_dbi_st7735r_ada_128x128 {
 		compatible = "zephyr,mipi-dbi-spi";
 		spi-dev = <&spi2>;
-		dc-gpios = <&gpio0 8 GPIO_ACTIVE_HIGH>;
-		reset-gpios = <&gpio0 14 GPIO_ACTIVE_LOW>;
-		write-only;
+		dc-gpios = <&gpio1 9 GPIO_ACTIVE_HIGH>;	    /* D41 */
+		reset-gpios = <&gpio1 7 GPIO_ACTIVE_LOW>;	/* D39 */
 		#address-cells = <1>;
 		#size-cells = <0>;
-
-		gc9a01: gc9a01@0 {
-			status = "okay";
-			compatible = "galaxycore,gc9x01x";
+		
+		st7789v_st7789v_waveshare_172_320: st7789v@0 {
+			compatible = "sitronix,st7789v";
+			mipi-max-frequency = <1000000000>;
 			reg = <0>;
-			mipi-max-frequency = <100000000>;
-			pixel-format = <PANEL_PIXEL_FORMAT_RGB_565>;
-			display-inversion;
-			width = <240>;
-			height = <240>;
+			width = <172>;
+			height = <320>;
+			x-offset = <34>;
+			y-offset = <0>;
+			vcom = <0x19>;
+			gctrl = <0x35>;
+			vrhs = <0x12>;
+			vdvs = <0x20>;
+			mdac = <0x00>;
+			gamma = <0x01>;
+			colmod = <0x05>;
+			lcm = <0x2c>;
+			porch-param = [0c 0c 00 33 33];
+			cmd2en-param = [5a 69 02 01];
+			pwctrl1-param = [a4 a1];
+			pvgam-param = [D0 04 0D 11 13 2B 3F 54 4C 18 0D 0B 1F 23];
+			nvgam-param = [D0 04 0C 11 13 2C 3F 44 51 2F 1F 1F 20 23];
+			ram-param = [00 F0];
+			rgb-param = [CD 08 14];
+			mipi-mode = "MIPI_DBI_MODE_SPI_4WIRE";
 		};
 	};
 };
 
+/* 16MB flash */
 &flash0 {
 	reg = <0x0 DT_SIZE_M(16)>;
+};
+
+/* 8MB psram */
+&psram0 {
+	size = <DT_SIZE_M(8)>;
+};
+
+&usb_serial {
+	status = "okay";
 };
 
 &gpio0 {
@@ -99,15 +109,7 @@
 	clock-frequency = <I2C_BITRATE_STANDARD>;
 	pinctrl-0 = <&i2c1_default>;
 	pinctrl-names = "default";
-
-	/* Hynitron CST816S Capacitive Touch Controller */
-	cst816s: cst816s@15 {
-		status = "okay";
-		compatible = "hynitron,cst816s";
-		reg = <0x15>;
-		irq-gpios = <&gpio0 5 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
-		rst-gpios = <&gpio0 13 GPIO_ACTIVE_LOW>;
-	};
+	
 };
 
 &ledc0 {
@@ -116,18 +118,18 @@
 	pinctrl-names = "default";
 	#address-cells = <1>;
 	#size-cells = <0>;
-	channel0@0 {
-		reg = <0x0>;
-		timer = <0>;
-	};
-	channel1@1 {
-		reg = <0x1>;
-		timer = <1>;
-	};
-	channel2@2 {
-		reg = <0x2>;
-		timer = <2>;
-	};
+	// channel0@0 {
+	// 	reg = <0x0>;
+	// 	timer = <0>;
+	// };
+	// channel1@1 {
+	// 	reg = <0x1>;
+	// 	timer = <1>;
+	// };
+	// channel2@2 {
+	// 	reg = <0x2>;
+	// 	timer = <2>;
+	// };
 };
 
 &spi2 {
@@ -136,7 +138,6 @@
 	#size-cells = <0>;
 	pinctrl-0 = <&spim2_default>;
 	pinctrl-names = "default";
-	cs-gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;
 };
 
 &trng0 {
