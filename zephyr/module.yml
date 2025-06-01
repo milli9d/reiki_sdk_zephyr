@@ -1,0 +1,7 @@
+build:
+  cmake: .
+  # kconfig: KConfig
+  settings:
+    dts_root: .
+    board_root: .
+    # soc_root: .

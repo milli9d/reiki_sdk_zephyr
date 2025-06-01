@@ -1,0 +1,6 @@
+board:
+  name: esp32s3_1_47_tft
+  full_name: ESP32-S3-1.47
+  vendor: waveshare
+  socs:
+  - name: esp32s3
