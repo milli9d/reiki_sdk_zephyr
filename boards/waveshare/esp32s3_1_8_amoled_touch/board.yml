@@ -1,0 +1,6 @@
+board:
+  name: esp32s3_1_8_amoled_touch
+  full_name: ESP32-S3-1.8-AMOLED-Touch
+  vendor: waveshare
+  socs:
+  - name: esp32s3

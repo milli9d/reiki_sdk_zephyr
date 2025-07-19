@@ -1,0 +1,19 @@
+description: ST7789V 320x240 display controller
+
+compatible: "shenge,sh8601a"
+
+include: [mipi-dbi-spi-device.yaml, display-controller.yaml]
+
+properties:
+  x-offset:
+    type: int
+    required: true
+    description: The column offset in pixels of the LCD to the controller memory
+
+  y-offset:
+    type: int
+    required: true
+    description: The row offset in pixels of the LCD to the controller memory
+
+  mipi-mode:
+    required: true

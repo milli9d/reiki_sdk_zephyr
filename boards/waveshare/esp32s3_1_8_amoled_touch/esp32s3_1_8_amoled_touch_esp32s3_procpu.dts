@@ -1,0 +1,242 @@
+/*
+* Copyright (c) 2024 Joel Guittet
+* SPDX-License-Identifier: Apache-2.0
+*/
+
+/dts-v1/;
+#include <espressif/esp32s3/esp32s3_r8.dtsi>
+#include "esp32s3_1_8_amoled_touch-pinctrl.dtsi"
+#include <zephyr/dt-bindings/display/panel.h>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <zephyr/dt-bindings/pwm/pwm.h>
+#include <espressif/partitions_0x0_amp_16M.dtsi>
+
+/* 16MB flash */
+&flash0 {
+    reg = <0x0 DT_SIZE_M(16)>;
+};
+
+&usb_serial {
+    status = "okay";
+};
+
+/ {
+    model = "ESP32-S3-1.8-AMOLED-TOUCH PROCPU";
+    compatible = "waveshare,esp32-s3-1.8-amoled-touch";
+    
+    chosen {
+        zephyr,sram = &sram1;
+        zephyr,console = &usb_serial;
+        zephyr,shell-uart = &usb_serial;
+        zephyr,flash = &flash0;
+        zephyr,code-partition = &slot0_partition;
+        // zephyr,display = &st7789v_st7789v_waveshare_172_320;
+        zephyr,bt-hci = &esp32_bt_hci;
+    };
+    
+    aliases {
+        i2c-0 = &i2c0;
+        i2c-1 = &i2c1;
+        pwm-0 = &ledc0;
+        pwm-lcd0 = &pwm_lcd0;
+        uart-0 = &uart0;
+        watchdog0 = &wdt0;
+    };
+    
+    /* PWM */
+    pwmleds {
+        compatible = "pwm-leds";
+        pwm_lcd0: pwm_lcd0 {
+            pwms = <&ledc0 0 PWM_HZ(250) PWM_POLARITY_NORMAL>;
+        };
+    };
+    
+    zephyr,user {
+        tft_led-gpios = <&gpio1 16 GPIO_ACTIVE_HIGH>;
+    };
+    
+    //     /* MIPI DBI */
+    //     mipi_dbi_spi {
+    //         compatible = "zephyr,mipi-dbi-spi";
+    //         spi-dev = <&spi2>;
+    //         dc-gpios = <&gpio1 9 GPIO_ACTIVE_HIGH>;	    /* D41 */
+    //         reset-gpios = <&gpio1 7 GPIO_ACTIVE_LOW>;	/* D39 */
+    //         #address-cells = <1>;
+    //         #size-cells = <0>;
+    
+    //         st7789v_st7789v_waveshare_172_320: st7789v@0 {
+    //             compatible = "sitronix,st7789v";
+    //             mipi-max-frequency = <1000000000>;
+    //             reg = <0>;
+    //             width = <172>;
+    //             height = <320>;
+    //             x-offset = <34>;
+    //             y-offset = <0>;
+    //             vcom = <0x19>;
+    //             gctrl = <0x35>;
+    //             vrhs = <0x12>;
+    //             vdvs = <0x20>;
+    //             mdac = <0x00>;
+    //             gamma = <0x01>;
+    //             colmod = <0x05>;
+    //             lcm = <0x2c>;
+    //             porch-param = [0c 0c 00 33 33];
+    //             cmd2en-param = [5a 69 02 01];
+    //             pwctrl1-param = [a4 a1];
+    //             pvgam-param = [D0 04 0D 11 13 2B 3F 54 4C 18 0D 0B 1F 23];
+    //             nvgam-param = [D0 04 0C 11 13 2C 3F 44 51 2F 1F 1F 20 23];
+    //             ram-param = [00 F0];
+    //             rgb-param = [CD 08 14];
+    //             mipi-mode = "MIPI_DBI_MODE_SPI_4WIRE";
+    //         };
+    //     };
+};
+
+
+&gpio0 {
+    status = "okay";
+};
+
+&gpio1 {
+    status = "okay";
+};
+
+&i2c0 {
+    status = "okay";
+    clock-frequency = <I2C_BITRATE_STANDARD>;
+    pinctrl-0 = <&i2c0_default>;
+    pinctrl-names = "default";
+};
+
+&i2c1 {
+    status = "okay";
+    clock-frequency = <I2C_BITRATE_FAST_PLUS>;
+    pinctrl-0 = <&i2c1_default>;
+    pinctrl-names = "default";
+    
+    axp2101@34 {
+        compatible = "x-powers,axp2101";
+        reg = <0x34>;
+        status = "okay";
+        
+        regulators {
+            compatible = "x-powers,axp2101-regulator";
+            status = "okay";
+            
+            DCDC1 {
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <3300000>;
+            };
+            DCDC2 {
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <900000>;
+            };
+            DCDC3 {
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <1200000>;
+            };
+            DCDC4 {
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <1800000>;
+            };
+            DCDC5 {
+                /* all properties for DCDC5 */
+                regulator-boot-off;
+            };
+            LDOA1 {
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <3300000>;
+            };
+            LDOA2 {
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <3300000>;
+            };
+            LDOA3 {
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <3000000>;
+            };
+            LDOA4 {
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <1800000>;
+            };
+            LDOB1 {
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <1200000>;
+            };
+            LDOB2 {
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <2800000>;
+            };
+            LDOC {
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <1200000>;
+            };
+            LDOD1 {
+                /* all properties for LDOD1 */
+            };
+            LDOD2 {
+                /* all properties for LDOD2 */
+            };
+        };
+    };
+    
+    tca9554: tca9554@20 {
+        compatible = "nxp,pca9554";
+        #gpio-cells= <0x2>;
+        reg = <0x20>;
+        ngpios = <0x8>;
+        gpio-controller;
+        status = "okay";
+    };
+    
+};
+
+&ledc0 {
+    status = "disabled";
+    pinctrl-0 = <&ledc0_default>;
+    pinctrl-names = "default";
+    #address-cells = <1>;
+    #size-cells = <0>;
+};
+
+&spi2 {
+    status = "okay";
+    #address-cells = <1>;
+    #size-cells = <0>;
+    pinctrl-0 = <&spim2_default>;
+    pinctrl-names = "default";
+};
+
+&trng0 {
+    status = "okay";
+};
+
+&uart0 {
+    status = "okay";
+    current-speed = <115200>;
+    pinctrl-0 = <&uart0_default>;
+    pinctrl-names = "default";
+};
+
+&wdt0 {
+    status = "okay";
+};
+
+&esp32_bt_hci {
+    status = "okay";
+};
+
+&wifi {
+    status = "okay";
+};
