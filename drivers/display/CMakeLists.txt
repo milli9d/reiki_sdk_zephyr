@@ -1,0 +1,2 @@
+
+add_subdirectory_ifdef(CONFIG_DISPLAY_SH8601 ${CMAKE_CURRENT_LIST_DIR}/sh8601)
