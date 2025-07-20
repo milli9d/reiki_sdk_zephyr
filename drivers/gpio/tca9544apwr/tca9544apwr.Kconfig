@@ -1,0 +1,19 @@
+# TCA9544APWR display driver configuration options
+# Copyright (c) 2025 Milind Singh <milind345@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig GPIO_TCA9544APWR
+	bool "TCA9544APWR I2C GPIO Expander driver"
+	default n
+	depends on DT_HAS_TI_TCA9544APWR_ENABLED
+	depends on I2C
+	select GPIO_GET_DIRECTION
+	help
+	  Enable driver for TCA9544APWR I2C GPIO Expander.
+
+config GPIO_TCA9544APWR_INIT_PRIORITY
+	int "TCA9544APWR I2C GPIO Expander Init priority"
+	default 70
+	depends on GPIO_TCA9544APWR
+	help
+	  Device driver initialization priority.
