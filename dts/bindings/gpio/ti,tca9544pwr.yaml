@@ -1,0 +1,29 @@
+# Binding for TI TCA9544A, compatible with NXP PCA9544A
+
+description: Texas Instruments TCA9544A I2C-based GPIO expander
+
+compatible: "ti,tca9544apwr"
+
+include: [gpio-controller.yaml, i2c-device.yaml]
+
+properties:
+  reset-gpios:
+    type: phandle-array
+    description:
+      Reset GPIO pin (active-low)
+      Left blank if the device does not have reset pin
+      or the pin is not connected in your application.
+
+  int-gpios:
+    type: phandle-array
+    description:
+      Interrupt GPIO pin (active-low open-drain)
+      Left blank if the pin is not connected in your
+      application.
+
+  "#gpio-cells":
+    const: 2
+
+gpio-cells:
+  - pin
+  - flags

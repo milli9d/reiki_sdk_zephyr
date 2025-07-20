@@ -1,0 +1,2 @@
+
+add_subdirectory_ifdef(CONFIG_GPIO_TCA9544APWR ${CMAKE_CURRENT_LIST_DIR}/tca9544apwr)
