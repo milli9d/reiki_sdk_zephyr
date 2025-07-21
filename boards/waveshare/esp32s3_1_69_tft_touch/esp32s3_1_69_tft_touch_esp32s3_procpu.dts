@@ -1,0 +1,194 @@
+/*
+* Copyright (c) 2024 Joel Guittet
+* SPDX-License-Identifier: Apache-2.0
+*/
+
+/dts-v1/;
+#include <espressif/esp32s3/esp32s3_common.dtsi>
+#include "esp32s3_1_69_tft_touch-pinctrl.dtsi"
+#include <zephyr/dt-bindings/display/panel.h>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <zephyr/dt-bindings/pwm/pwm.h>
+#include <espressif/partitions_0x0_amp_16M.dtsi>
+
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <zephyr/dt-bindings/lvgl/lvgl.h>
+
+
+/* 16MB flash */
+&flash0 {
+    reg = <0x0 DT_SIZE_M(16)>;
+};
+
+/* 8MB psram */
+&psram0 {
+    size = <DT_SIZE_M(8)>;
+};
+
+/ {
+    model = "ESP32-S3-1.47-TFT PROCPU";
+    compatible = "waveshare,esp32-s3-1.47-tft";
+    
+    chosen {
+        zephyr,sram = &sram1;
+        zephyr,console = &usb_serial;
+        zephyr,shell-uart = &usb_serial;
+        zephyr,flash = &flash0;
+        zephyr,code-partition = &slot0_partition;
+        zephyr,display = &st7789v_st7789v_waveshare_240_280;
+        zephyr,input = &cst816s;
+        zephyr,bt-hci = &esp32_bt_hci;
+    };
+    
+    aliases {
+        i2c-0 = &i2c0;
+        i2c-1 = &i2c1;
+        pwm-0 = &ledc0;
+        pwm-lcd0 = &pwm_lcd0;
+        buzzer = &buzzer;
+        uart-0 = &uart0;
+        watchdog0 = &wdt0;
+    };
+    
+    /* PWM */
+    pwmleds {
+        compatible = "pwm-leds";
+        pwm_lcd0: pwm_lcd0 {
+            pwms = <&ledc0 0 PWM_HZ(10000) PWM_POLARITY_NORMAL>;
+        };
+        buzzer: buzzer {
+            pwms = <&ledc0 1 PWM_HZ(1000) PWM_POLARITY_INVERTED>;
+        };
+    };
+    
+    zephyr,user {
+        tft_led-gpios = <&gpio0 15 GPIO_ACTIVE_HIGH>;
+    };
+    
+    mipi_dbi {
+        compatible = "zephyr,mipi-dbi-spi";
+        spi-dev = <&spi2>;
+        dc-gpios = <&gpio0 4 GPIO_ACTIVE_HIGH>;	    /* D41 */
+        reset-gpios = <&gpio0 8 GPIO_ACTIVE_LOW>;	/* D39 */
+        #address-cells = <1>;
+        #size-cells = <0>;
+        
+        st7789v_st7789v_waveshare_240_280: st7789v@0 {
+            compatible = "sitronix,st7789v";
+            mipi-max-frequency = <80000000>;
+            reg = <0>;
+            width = <240>;
+            height = <280>;
+            x-offset = <0>;
+            y-offset = <20>;
+            vcom = <0x19>;
+            gctrl = <0x35>;
+            vrhs = <0x12>;
+            vdvs = <0x20>;
+            mdac = <0x00>;
+            gamma = <0x02>;// 01h G2.2 ; 02h G1.8 ; 03h G2.5; 04h G1.0
+            colmod = <0x65>;
+            lcm = <0x2c>;
+            porch-param = [0c 0c 00 33 33];
+            cmd2en-param = [5a 69 02 01];
+            pwctrl1-param = [52 a1];
+            pvgam-param = [D0 04 0D 11 13 2B 3F 54 4C 18 0D 0B 1F 23];
+            nvgam-param = [D0 04 0C 11 13 2C 3F 44 51 2F 1F 1F 20 23];
+            ram-param = [00 C0];
+            rgb-param = [CD 08 14];
+            mipi-mode = "MIPI_DBI_MODE_SPI_4WIRE";
+        };
+    };
+    
+    pointer {
+        compatible = "zephyr,lvgl-pointer-input";
+        input = <&cst816s>;
+    };
+};
+
+&gpio0 {
+    status = "okay";
+};
+
+&gpio1 {
+    status = "okay";
+};
+
+&i2c0 {
+    status = "disabled";
+};
+
+&i2c1 {
+    status = "okay";
+    clock-frequency = <I2C_BITRATE_FAST_PLUS>;
+    pinctrl-0 = <&i2c1_default>;
+    pinctrl-names = "default";
+    
+    cst816s: cst816s@15 {
+        compatible = "hynitron,cst816s";
+        reg = <0x15>;
+        rst-gpios = <&gpio0 13 GPIO_ACTIVE_LOW>;// GPIO0 13
+        irq-gpios = <&gpio0 14 GPIO_ACTIVE_HIGH>;// GPIO0 14
+        status = "okay";
+    };
+    
+    // qmi8658c: qmi8658c@6a {
+    // 	compatible = "qorvo,qmi8658c";
+    // 	reg = <0x6a>;
+    // 	status = "okay";
+    // 	interrupt-parent = <&gpio0>;
+    // 	interrupts = <12 IRQ_TYPE_EDGE_FALLING>; // GPIO0 12
+    // 	pinctrl-names = "default";
+    // 	pinctrl-0 = <&qmi8658c_default>;
+    // };
+};
+
+&ledc0 {
+    status = "okay";
+    pinctrl-0 = <&ledc0_default>;
+    pinctrl-names = "default";
+    #address-cells = <1>;
+    #size-cells = <0>;
+    
+    channel0@0 {
+        reg = <0x0>;
+        timer = <0>;
+    };
+};
+
+&spi2 {
+    status = "okay";
+    #address-cells = <1>;
+    #size-cells = <0>;
+    pinctrl-0 = <&spim2_default>;
+    dma-enabled;
+    use-iomux;
+    pinctrl-names = "default";
+};
+
+&trng0 {
+    status = "okay";
+};
+
+&uart0 {
+    status = "okay";
+    current-speed = <115200>;
+    pinctrl-0 = <&uart0_default>;
+    pinctrl-names = "default";
+};
+
+&wdt0 {
+    status = "okay";
+};
+
+&esp32_bt_hci {
+    status = "okay";
+};
+
+&usb_serial {
+    status = "okay";
+};
+
+// &wifi {
+//     status = "okay";
+// };
