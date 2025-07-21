@@ -1,1 +1,1 @@
-orsource "**/.Kconfig"
+orsource "drivers/Kconfig"

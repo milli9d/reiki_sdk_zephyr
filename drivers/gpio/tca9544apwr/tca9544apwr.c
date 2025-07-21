@@ -511,11 +511,10 @@ static DEVICE_API(gpio, gpio_tca9544apwr_drv_api) = {
 
 /* TODO: Add DT_DEFINE */
 #define GPIO_TCA9544APWR_DEVICE_INSTANCE(inst)                                                   \
-    static const gpio_tca9544apwr_config_t gpio_tca9544apwr_##inst##_cfg = {	                 \
-        .drv_cfg = {							                                                 \
-            .port_pin_mask = GPIO_PORT_PIN_MASK_FROM_DT_INST(inst),	                             \
-        },								                                                         \
-        .i2c_bus = I2C_DT_SPEC_INST_GET(inst)				                                     \
+    static const gpio_tca9544apwr_config_t gpio_tca9544apwr_##inst##_cfg = {                     \
+        .drv_cfg = { .port_pin_mask = GPIO_DT_INST_PORT_PIN_MASK_NGPIOS_EXC(                     \
+                         inst, DT_INST_PROP(inst, ngpios)) },                                    \
+        .i2c_bus = I2C_DT_SPEC_INST_GET(inst)                                                    \
     };                                                                                           \
                                                                                                  \
     static gpio_tca9544apwr_data_t gpio_tca9544apwr_##inst##_drvdata;                            \
