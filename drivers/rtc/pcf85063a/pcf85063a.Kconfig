@@ -1,0 +1,18 @@
+# SH8601 display driver configuration options
+
+# Copyright (c) 2019 Marc Reilly <marc@cpdesign.com.au>
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig RTC_PCF85063A
+	bool "NXP PCF85063A RTC driver"
+	default y
+	depends on I2C
+	help
+	  Enable driver for NXP PCA85063A RTC.
+
+config RTC_PCF85063A_INIT_PRIORITY
+	int "RTC PCF85063A Init priority"
+	default 70
+	depends on RTC_PCF85063A
+	help
+	  Device driver initialization priority.
