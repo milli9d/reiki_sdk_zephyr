@@ -1,0 +1,2 @@
+
+add_subdirectory_ifdef(CONFIG_RTC_PCF85063A ${CMAKE_CURRENT_LIST_DIR}/pcf85063a)

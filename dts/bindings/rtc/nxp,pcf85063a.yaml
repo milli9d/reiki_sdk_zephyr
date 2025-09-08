@@ -1,0 +1,11 @@
+description: PCF85063A RTC
+
+compatible: "nxp,pcf85063a"
+
+include: [i2c-device.yaml, rtc-device.yaml]
+
+properties:
+  int1-gpios:
+    type: phandle-array
+    description: |
+      GPIO connected to the PCF85063A INT interrupt output. This signal is open-drain, active low.

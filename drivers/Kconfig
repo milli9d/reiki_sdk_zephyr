@@ -1,1 +1,5 @@
 rsource "**/tca9544apwr/tca9544apwr.Kconfig"
+rsource "**/pcf85063a/pcf85063a.Kconfig"
+
+orsource "**/*.Kconfig"
+
