@@ -1,0 +1,10 @@
+name: Doom
+build:
+  cmake: .
+  # kconfig: Kconfig
+  # settings:
+    # board_root: .
+    # dts_root: .
+    # soc_root: .
+    # arch_root: .
+    # module_ext_root: .
