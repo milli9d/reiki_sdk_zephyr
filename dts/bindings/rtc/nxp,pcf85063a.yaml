@@ -1,6 +1,6 @@
 description: PCF85063A RTC
 
-compatible: "nxp,pcf85063a"
+compatible: "nxp,pcf85063a_rtc"
 
 include: [i2c-device.yaml, rtc-device.yaml]
 

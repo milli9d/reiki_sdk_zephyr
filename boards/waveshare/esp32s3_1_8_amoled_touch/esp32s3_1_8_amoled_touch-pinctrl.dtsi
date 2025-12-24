@@ -36,6 +36,7 @@
             output-enable;
         };
     };
+
     
     spim2_default: spim2_default {
         group1 {
@@ -60,6 +61,16 @@
             output-low;
         };
     };
+
+    sdhc0_default: sdhc0_default {
+		group1 {
+			pinmux = <SDHC0_CLKOUT_GPIO2>,
+				 <SDHC0_CMD_GPIO1>,
+				 <SDHC0_DATA0_GPIO3>;
+			bias-pull-up;
+			output-high;
+		};
+	};
     
     uart0_default: uart0_default {
         group1 {
