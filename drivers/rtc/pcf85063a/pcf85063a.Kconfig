@@ -3,16 +3,16 @@
 # Copyright (c) 2019 Marc Reilly <marc@cpdesign.com.au>
 # SPDX-License-Identifier: Apache-2.0
 
-menuconfig RTC_PCF85063A
+menuconfig RTC_PCF85063A_CUSTOM
 	bool "NXP PCF85063A RTC driver"
 	default y
 	depends on I2C
 	help
 	  Enable driver for NXP PCA85063A RTC.
 
-config RTC_PCF85063A_INIT_PRIORITY
+config RTC_PCF85063A_CUSTOM_INIT_PRIORITY
 	int "RTC PCF85063A Init priority"
 	default 70
-	depends on RTC_PCF85063A
+	depends on RTC_PCF85063A_CUSTOM
 	help
 	  Device driver initialization priority.

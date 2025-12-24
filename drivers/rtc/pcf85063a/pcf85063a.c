@@ -8,7 +8,7 @@ LOG_MODULE_REGISTER(PCF86053A, 4);
 
 #include <pcf85063a.h>
 
-#define DT_DRV_COMPAT nxp_pcf85063a
+#define DT_DRV_COMPAT nxp_pcf85063a_rtc
 
 /* ========================================================================= */
 /* Private Data */
