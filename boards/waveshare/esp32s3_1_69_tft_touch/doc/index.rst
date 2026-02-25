@@ -1,11 +1,12 @@
-.. zephyr:board:: esp32s3_touch_lcd_1_28
+.. zephyr:board:: esp32s3_1_69_tft_touch
 
 Overview
 ********
 
-The ESP32-S3-Touch-LCD-1.28 is an ESP32S3 development board from Waveshare with a round LCD,
-suitable to build watches or similar projects. This board integrates complete Wi-Fi and Bluetooth
-Low Energy functions, an accelerometer and gyroscope, a battery charger and GPIO extension port.
+The ESP32-S3-Touch-LCD-1.69 is an ESP32-S3 development board from Waveshare with a
+1.69" color LCD and touch support, suitable for compact UI and wearable-style projects.
+The board integrates Wi-Fi and Bluetooth Low Energy, motion sensing,
+real-time clock support, and battery charging circuitry.
 
 Hardware
 ********
@@ -15,7 +16,7 @@ and Bluetooth® Low Energy (Bluetooth LE). It consists of high-performance dual-
 (Xtensa® 32-bit LX7), a low power coprocessor, a Wi-Fi baseband, a Bluetooth LE baseband,
 RF module, and numerous peripherals.
 
-ESP32-S3-Touch-LCD-1.28 includes the following features:
+ESP32-S3-Touch-LCD-1.69 includes the following features:
 
 - Dual core 32-bit Xtensa Microprocessor (Tensilica LX7), running up to 240MHz
 - Additional vector instructions support for AI acceleration
@@ -23,8 +24,9 @@ ESP32-S3-Touch-LCD-1.28 includes the following features:
 - 16MB of FLASH
 - Wi-Fi 802.11b/g/n
 - Bluetooth LE 5.0 with long-range support and up to 2Mbps data rate
-- Round 1.28" LCD with touchscreen controller
-- Accelerometer/gyroscope
+- 1.69" TFT LCD (240 x 280) with touchscreen controller
+- QMI8658 accelerometer/gyroscope
+- PCF85063 real-time clock (RTC)
 - Battery charger
 
 Digital interfaces:
@@ -91,6 +93,6 @@ References
 
 .. target-notes::
 
-.. _ESP32-S3-Touch-LCD-1.28 Waveshare Wiki: https://www.waveshare.com/wiki/ESP32-S3-Touch-LCD-1.28
+.. _ESP32-S3-Touch-LCD-1.69 Waveshare Wiki: https://www.waveshare.com/wiki/ESP32-S3-Touch-LCD-1.69
 .. _ESP32-S3 Datasheet: https://www.espressif.com/sites/default/files/documentation/esp32-s3-mini-1_mini-1u_datasheet_en.pdf
 .. _ESP32-S3 Technical Reference Manual: https://www.espressif.com/sites/default/files/documentation/esp32-s3_technical_reference_manual_en.pdf
