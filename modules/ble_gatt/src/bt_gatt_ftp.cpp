@@ -1,3 +1,4 @@
+#include <cstdio>
 #include <zephyr/kernel.h>
 #include <zephyr/init.h>
 

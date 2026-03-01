@@ -1,0 +1,13 @@
+# BLE GATT FTP configuration options
+
+# Copyright (c) 2026 Milind Singh <milind345@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig BLE_GATT_FTP
+	bool "BLE GATT FTP Service"
+	depends on BT
+	depends on BT_GATT_CLIENT
+    select BT_GATT_AUTO_UPDATE_MTU
+    select BT_L2CAP_TX_MTU
+	help
+	 Enable BLE GATT FTP module.

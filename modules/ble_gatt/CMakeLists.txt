@@ -3,7 +3,6 @@ zephyr_library_named(ble_gatt)
 set_target_properties(ble_gatt PROPERTIES LINKER_LANGUAGE CXX)
 
 zephyr_compile_definitions(
-
     # PICO_BUILD
     __LINUX__
 )
@@ -19,7 +18,9 @@ file(GLOB srcs
     ${CMAKE_CURRENT_LIST_DIR}/src/*.c*
 )
 
-zephyr_library_sources(${srcs})
+zephyr_library_sources_ifdef(CONFIG_BLE_GATT_FTP
+    ${srcs}
+)
 
-zephyr_library_include_directories(${CMAKE_CURRENT_LIST_DIR}/include)
-zephyr_include_directories(${CMAKE_CURRENT_LIST_DIR}/include)
+zephyr_library_include_directories_ifdef(CONFIG_BLE_GATT_FTP ${CMAKE_CURRENT_LIST_DIR}/include)
+zephyr_include_directories_ifdef(CONFIG_BLE_GATT_FTP ${CMAKE_CURRENT_LIST_DIR}/include)
