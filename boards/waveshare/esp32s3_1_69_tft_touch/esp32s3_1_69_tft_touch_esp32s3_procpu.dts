@@ -73,15 +73,13 @@
     pinctrl-0 = <&i2c1_default>;
     pinctrl-names = "default";
     
-    // qmi8658c: qmi8658c@6a {
-    // 	compatible = "qorvo,qmi8658c";
-    // 	reg = <0x6a>;
-    // 	status = "okay";
-    // 	interrupt-parent = <&gpio0>;
-    // 	interrupts = <12 IRQ_TYPE_EDGE_FALLING>; // GPIO0 12
-    // 	pinctrl-names = "default";
-    // 	pinctrl-0 = <&qmi8658c_default>;
-    // };
+    qmi8658c: qmi8658c@6b {
+        compatible = "qorvo,qmi8658c";
+        reg = <0x6b>;
+        status = "okay";
+        int1-gpios = <&gpio1 8 GPIO_ACTIVE_HIGH>;// GPIO_38
+        status = "okay";
+    };
 };
 
 &ledc0 {

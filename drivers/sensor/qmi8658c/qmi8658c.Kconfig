@@ -1,0 +1,19 @@
+# Qorvo QMI8658C IMU driver configuration options
+
+# Copyright (c) 2026 Milind Singh <milind345@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig IMU_QMI8658C
+	bool "Qorvo QMI8658C IMU driver"
+	default DT_HAS_QORVO_QMI8658C_ENABLED
+	depends on I2C
+	depends on SENSOR
+	help
+	 Enable driver for Qorvo QMI8658C IMU.
+
+config IMU_QMI8658C_INIT_PRIORITY
+	int "Qorvo QMI8658C IMU Init priority"
+	default 70
+	depends on IMU_QMI8658C
+	help
+	 Device driver initialization priority.

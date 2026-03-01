@@ -1,0 +1,22 @@
+description: Qorvo QMI8658C IMU
+
+compatible: "qorvo,qmi8658c"
+
+include: 
+    - name: i2c-device.yaml
+    #  property-allowlist:
+    #  property-blocklist:
+    - name: sensor-device.yaml
+    #  property-allowlist:
+    #  property-blocklist:
+
+properties:
+  int1-gpios:
+    type: phandle-array
+    description: |
+      GPIO connected to the IMU INT1 output. This signal is open-drain, active low.
+
+  int2-gpios:
+    type: phandle-array
+    description: |
+      GPIO connected to the IMU INT2 output. This signal is open-drain, active low.
