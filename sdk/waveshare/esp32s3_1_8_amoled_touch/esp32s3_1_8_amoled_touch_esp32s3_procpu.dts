@@ -1,0 +1,331 @@
+/*
+* Copyright (c) 2024 Joel Guittet
+* SPDX-License-Identifier: Apache-2.0
+*/
+
+/dts-v1/;
+#include <espressif/esp32s3/esp32s3_r8.dtsi>
+#include "esp32s3_1_8_amoled_touch-pinctrl.dtsi"
+#include <zephyr/dt-bindings/display/panel.h>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <zephyr/dt-bindings/pwm/pwm.h>
+#include <espressif/partitions_0x0_amp_16M.dtsi>
+
+/* 16MB flash */
+&flash0 {
+    reg = <0x0 DT_SIZE_M(16)>;
+};
+
+&usb_serial {
+    status = "okay";
+};
+
+/ {
+    model = "ESP32-S3-1.8-AMOLED-TOUCH PROCPU";
+    compatible = "waveshare,esp32-s3-1.8-amoled-touch";
+    
+    chosen {
+        zephyr,sram = &sram1;
+        zephyr,console = &usb_serial;
+        zephyr,shell-uart = &usb_serial;
+        zephyr,flash = &flash0;
+        // zephyr,code-partition = &slot0_partition;
+        // zephyr,display = &amoled_sh8601;
+        zephyr,bt-hci = &esp32_bt_hci;
+    };
+    
+    aliases {
+        i2c-0 = &i2c0;
+        i2c-1 = &i2c1;
+        pwm-0 = &ledc0;
+        pwm-lcd0 = &pwm_lcd0;
+        uart-0 = &uart0;
+        watchdog0 = &wdt0;
+    };
+    
+    /* PWM */
+    pwmleds {
+        compatible = "pwm-leds";
+        pwm_lcd0: pwm_lcd0 {
+            pwms = <&ledc0 0 PWM_HZ(250) PWM_POLARITY_NORMAL>;
+        };
+    };
+    
+    zephyr,user {
+        tft_led-gpios = <&gpio1 16 GPIO_ACTIVE_HIGH>;
+    };
+    
+    // mipi_dsi_qspi {
+    //     compatible = "zephyr,mipi-dbi-spi";
+    //     spi-dev = <&spi2>;
+    // 	reset-gpios = <&tca9554apwr 0 GPIO_ACTIVE_LOW>;
+    //     #address-cells = <1>;
+    //     #size-cells = <0>;
+    //     status = "okay";
+    
+    //     amoled_sh8601: sh6801@0 {
+    //         compatible = "shenge,sh8601a";
+    //         reg = <0>;
+    //         x-offset = <0>;
+    //         y-offset = <0>;
+    //         height = <448>;
+    //         width = <368>;
+    //         status = "okay";
+    //     };
+    // };
+};
+
+&dma {
+    status = "okay";
+};
+
+&gpio0 {
+    status = "okay";
+};
+
+&gpio1 {
+    status = "okay";
+};
+
+&i2c0 {
+    status = "okay";
+    clock-frequency = <I2C_BITRATE_STANDARD>;
+    pinctrl-0 = <&i2c0_default>;
+    pinctrl-names = "default";
+};
+
+&i2c1 {
+    status = "okay";
+    clock-frequency = <I2C_BITRATE_FAST_PLUS>;
+    pinctrl-0 = <&i2c1_default>;
+    pinctrl-names = "default";
+    
+    
+};
+
+&ledc0 {
+    status = "disabled";
+    pinctrl-0 = <&ledc0_default>;
+    pinctrl-names = "default";
+    #address-cells = <1>;
+    #size-cells = <0>;
+};
+
+&spi2 {
+    status = "okay";
+    #address-cells = <1>;
+    #size-cells = <0>;
+    pinctrl-0 = <&spim2_default>;
+    pinctrl-names = "default";
+};
+
+&spi3 {
+    status = "okay";
+    #address-cells = <1>;
+    #size-cells = <0>;
+    pinctrl-0 = <&spim3_default>;
+    pinctrl-names = "default";
+};
+
+&sdhc {
+    sdhc0: sdhc@0 {
+        status = "okay";
+        
+        pinctrl-0 = <&sdhc0_default>;
+        pinctrl-names = "default";
+        max-bus-freq = <52000000>;
+        bus-width = <1>;
+        
+        mmc {
+            compatible = "zephyr,sdmmc-disk";
+            disk-name = "SD";
+            status = "okay";
+        };
+    };
+    
+    status = "okay";
+};
+
+&trng0 {
+    status = "okay";
+};
+
+&uart0 {
+    status = "okay";
+    current-speed = <115200>;
+    pinctrl-0 = <&uart0_default>;
+    pinctrl-names = "default";
+};
+
+&wdt0 {
+    status = "okay";
+};
+
+&esp32_bt_hci {
+    status = "okay";
+};
+
+&wifi {
+    status = "okay";
+};
+
+/* ================================================================ */
+/* AX2101 Charger PMIC */
+/* ================================================================ */
+
+/ {
+    aliases {
+        axp2101 = &axp2101;
+    };
+};
+
+&i2c1 {
+    /* AXP2101 Charger PMIC */
+    axp2101: axp2101@34 {
+        compatible = "x-powers,axp2101";
+        reg = <0x34>;
+        status = "okay";
+        
+        regulators {
+            compatible = "x-powers,axp2101-regulator";
+            status = "okay";
+            
+            DCDC1: DCDC1 {
+                #power-domain-cells=<0>;
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <3300000>;
+            };
+            DCDC2: DCDC2 {
+                #power-domain-cells=<0>;
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <900000>;
+            };
+            DCDC3: DCDC3 {
+                #power-domain-cells=<0>;
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <1200000>;
+            };
+            DCDC4: DCDC4 {
+                #power-domain-cells=<0>;
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <1800000>;
+            };
+            DCDC5: DCDC5 {
+                #power-domain-cells=<0>;
+                regulator-boot-off;
+            };
+            LDOA1: LDOA1 {
+                #power-domain-cells=<0>;
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <3300000>;
+            };
+            LDOA2: LDOA2 {
+                #power-domain-cells=<0>;
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <3300000>;
+            };
+            LDOA3: LDOA3 {
+                #power-domain-cells=<0>;
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <3000000>;
+            };
+            LDOA4: LDOA4 {
+                #power-domain-cells=<0>;
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <1800000>;
+            };
+            LDOB1: LDOB1 {
+                #power-domain-cells=<0>;
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <1200000>;
+            };
+            LDOB2: LDOB2 {
+                #power-domain-cells=<0>;
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <2800000>;
+            };
+            LDOC: LDOC {
+                #power-domain-cells=<0>;
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-init-microvolt = <1200000>;
+            };
+            LDOD1: LDOD1 {
+                #power-domain-cells=<0>;
+                /* all properties for LDOD1 */
+            };
+            LDOD2: LDOD2 {
+                #power-domain-cells=<0>;
+                /* all properties for LDOD2 */
+            };
+        };
+    };
+};
+
+/* ================================================================ */
+/* TCA9554 GPIO Expander */
+/* ================================================================ */
+
+/ {
+    aliases {
+        tca9554apwr = &tca9554apwr;
+    };
+    
+    zephyr,user {
+        exio0-gpios = <&tca9554apwr 0 GPIO_ACTIVE_HIGH>;
+        exio1-gpios = <&tca9554apwr 1 GPIO_ACTIVE_HIGH>;
+        exio2-gpios = <&tca9554apwr 2 GPIO_ACTIVE_HIGH>;
+        exio3-gpios = <&tca9554apwr 3 GPIO_ACTIVE_LOW>;
+        exio4-gpios = <&tca9554apwr 4 GPIO_ACTIVE_HIGH>;
+        exio5-gpios = <&tca9554apwr 5 GPIO_ACTIVE_HIGH>;
+        exio6-gpios = <&tca9554apwr 6 GPIO_ACTIVE_HIGH>;
+        exio7-gpios = <&tca9554apwr 7 GPIO_ACTIVE_HIGH>;
+    };
+};
+
+&i2c1 {
+    /**
+    * TCA9554 GPIO Expander
+    * PCA9554 is a register compatible low-power GPIO expander
+    */
+    tca9554apwr: tca9554apwr@20 {
+        compatible = "ti,tca9544apwr";
+        reg = <0x20>;
+        gpio-controller;
+        ngpios=<0x8>;
+        // power-domains=<&DCDC1>;
+        #gpio-cells= <0x2>;
+        status = "okay";
+    };
+    
+};
+
+/* ================================================================ */
+/* ES8311 Audio Codec */
+/* ================================================================ */
+
+/* ================================================================ */
+/* QMI8658C IMU */
+/* ================================================================ */
+
+/* ================================================================ */
+/* PCF85063ATL RTC */
+/* ================================================================ */
+
+&i2c1 {
+    pcf85063a: pcf85063a@51 {
+        compatible = "nxp,pcf85063a";
+        reg = <0x51>;
+        status = "okay";
+    };
+};
