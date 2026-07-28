@@ -9,7 +9,7 @@
 #include <zephyr/dt-bindings/display/panel.h>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 #include <zephyr/dt-bindings/pwm/pwm.h>
-// #include <espressif/partitions_0x0_amp_16M.dtsi>
+#include <espressif/partitions_0x0_amp_16M.dtsi>
 
 /* 16MB flash */
 &flash0 {
@@ -104,7 +104,7 @@
 };
 
 &ledc0 {
-    status = "disabled";
+    status = "okay";
     pinctrl-0 = <&ledc0_default>;
     pinctrl-names = "default";
     #address-cells = <1>;
@@ -303,7 +303,7 @@
         reg = <0x20>;
         gpio-controller;
         ngpios=<0x8>;
-        // power-domains=<&DCDC1>;
+        power-domains=<&DCDC1>;
         #gpio-cells= <0x2>;
         status = "okay";
     };
