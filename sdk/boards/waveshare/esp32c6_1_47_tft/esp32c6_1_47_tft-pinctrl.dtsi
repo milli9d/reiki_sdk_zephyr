@@ -21,9 +21,7 @@
     
     ledc0_default: ledc0_default {
         group1 {
-            pinmux = <LEDC_CH0_GPIO2>,
-            <LEDC_CH1_GPIO5>,
-            <LEDC_CH2_GPIO4>;
+            pinmux = <LEDC_CH0_GPIO22>;
             output-enable;
         };
     };
@@ -31,8 +29,7 @@
     spim2_default: spim2_default {
         group1 {
             pinmux = <SPIM2_MISO_GPIO5>,
-            <SPIM2_SCLK_GPIO7>,
-            <SPIM2_CSEL_GPIO4>;
+                     <SPIM2_SCLK_GPIO7>;
         };
         group2 {
             pinmux = <SPIM2_MOSI_GPIO6>;
