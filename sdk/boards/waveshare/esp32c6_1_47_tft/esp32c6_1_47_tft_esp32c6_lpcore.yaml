@@ -1,5 +1,5 @@
-identifier: esp32s3_1_47_tft/esp32s3/lpcore
-name: ESP32-S3-TFT-1.47 LPCORE
+identifier: esp32c6_1_47_tft/esp32c6/lpcore
+name: ESP32-C6-TFT-1.47 LPCORE
 type: mcu
 arch: xtensa
 toolchain:
