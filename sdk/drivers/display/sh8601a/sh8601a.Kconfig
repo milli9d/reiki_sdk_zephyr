@@ -5,7 +5,7 @@
 
 menuconfig DISPLAY_SH8601A
 	bool "SH8601 display driver"
-	default y
+	default n
 	# depends on DT_HAS_SITRONIX_ST7789V_ENABLED
 	select MIPI_DBI
 	help

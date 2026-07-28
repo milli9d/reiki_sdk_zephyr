@@ -1,0 +1,9 @@
+
+
+&i2c0{
+    led_matrix:ht16k33@71 {
+        reg =<0x71>;
+        compatible = "holtek,ht16k33";
+        status = "okay";
+    };
+};
