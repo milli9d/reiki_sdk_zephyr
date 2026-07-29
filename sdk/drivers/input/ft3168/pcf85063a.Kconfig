@@ -1,0 +1,18 @@
+# FT3168 display touch controller configuration options
+
+# Copyright (c) 2019 Marc Reilly <marc@cpdesign.com.au>
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig INPUT_FT3168
+	bool "FocalTech FT3168 Input driver"
+	default y
+	depends on I2C
+	help
+	  Enable driver for FocalTech FT3168 Input touch panel.
+
+config INPUT_FT3168_CUSTOM_INIT_PRIORITY
+	int "INPUT FT3168 Init priority"
+	default 70
+	depends on INPUT_FT3168
+	help
+	  Device driver initialization priority FocalTech FT3168 Input touch panel.

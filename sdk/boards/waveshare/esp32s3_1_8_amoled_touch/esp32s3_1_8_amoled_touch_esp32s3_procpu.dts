@@ -96,11 +96,9 @@
 
 &i2c1 {
     status = "okay";
-    clock-frequency = <I2C_BITRATE_FAST_PLUS>;
+    clock-frequency = <I2C_BITRATE_FAST>;
     pinctrl-0 = <&i2c1_default>;
     pinctrl-names = "default";
-    
-    
 };
 
 &ledc0 {
@@ -316,6 +314,13 @@
 
 &i2c1 {
     /* FT3168 Touch controller */
+    ft3168: ft3168@38 {
+        compatible = "focaltech,ft3168";
+        reg = <0x38>;
+        int-gpios = <&gpio0 21 GPIO_ACTIVE_HIGH>;
+        reset-gpios = <&tca9554apwr 2 GPIO_ACTIVE_LOW>;
+        status = "disabled";
+    };
 };
 
 /* ================================================================ */
