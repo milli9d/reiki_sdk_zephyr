@@ -433,6 +433,68 @@ static int gpio_tca9544apwr_port_get_raw(const struct device* dev, gpio_port_val
 }
 
 /**
+ * @brief Configure a single pin of the TCA9544APWR as input or output.
+ *
+ * The device has no internal pull resistors or open-drain mode; those flags
+ * are rejected. For outputs, the initial level is written to the output port
+ * register before the direction is switched to avoid a glitch.
+ *
+ * @param dev Pointer to the device structure representing the TCA9544APWR.
+ * @param pin Pin number to configure.
+ * @param flags Zephyr GPIO configuration flags.
+ *
+ * @return 0 on success, or a negative error code on failure.
+ */
+static int gpio_tca9544apwr_pin_configure(const struct device* dev, gpio_pin_t pin,
+                                          gpio_flags_t flags)
+{
+    const gpio_tca9544apwr_config_t* const drv_cfg = dev->config;
+    const uint8_t                          bit     = BIT(pin);
+
+    if ((drv_cfg->drv_cfg.port_pin_mask & BIT(pin)) == 0u) {
+        return -EINVAL;
+    }
+
+    /* unsupported hardware features */
+    if ((flags & (GPIO_PULL_UP | GPIO_PULL_DOWN | GPIO_SINGLE_ENDED)) != 0u) {
+        return -ENOTSUP;
+    }
+
+    if ((flags & GPIO_INPUT) && (flags & GPIO_OUTPUT)) {
+        return -ENOTSUP;
+    }
+
+    int rc;
+
+    if (flags & GPIO_OUTPUT) {
+        /* set the initial level before enabling the output driver */
+        if (flags & GPIO_OUTPUT_INIT_HIGH) {
+            rc = gpio_tca9544apwr_reg_update(dev, TCA9544APWR_REG_OUTPUT_PORT_WR, bit, bit);
+        } else if (flags & GPIO_OUTPUT_INIT_LOW) {
+            rc = gpio_tca9544apwr_reg_update(dev, TCA9544APWR_REG_OUTPUT_PORT_WR, bit, 0u);
+        } else {
+            rc = 0;
+        }
+        if (rc < 0) {
+            return rc;
+        }
+
+        /* 0 = output */
+        rc = gpio_tca9544apwr_reg_update(dev, TCA9544APWR_REG_CONFIGURATION, bit, 0u);
+    } else {
+        /* input or disconnected: 1 = input (high-Z) */
+        rc = gpio_tca9544apwr_reg_update(dev, TCA9544APWR_REG_CONFIGURATION, bit, bit);
+    }
+
+    if (rc < 0) {
+        LOG_ERR("Failed to configure pin %u", pin);
+        return rc;
+    }
+
+    return 0;
+}
+
+/**
  * @brief Initializes the TCA9544A GPIO multiplexer.
  *
  * This function configures the TCA9544A device for operation. It sets up
@@ -492,7 +554,7 @@ static int gpio_tca9544apwr_init(const struct device* dev)
 #define DT_DRV_COMPAT ti_tca9544apwr
 
 static DEVICE_API(gpio, gpio_tca9544apwr_drv_api) = {
-    .pin_configure = NULL,
+    .pin_configure = gpio_tca9544apwr_pin_configure,
 #ifdef CONFIG_GPIO_GET_CONFIG
     .pin_get_config = NULL,
 #endif

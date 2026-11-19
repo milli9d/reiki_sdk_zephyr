@@ -1,0 +1,29 @@
+# Copyright (c) 2026 Milind Singh
+# SPDX-License-Identifier: Apache-2.0
+
+description: |
+  SH8601 AMOLED display controller on a single-line SPI bus.
+
+  The controller's QSPI interface frames every access as an opcode byte
+  (0x02) followed by a 24-bit address carrying the DCS command
+  ({0x00, CMD, 0x00}), followed by the command parameters or pixel data.
+  On this bus everything, including pixel data, is shifted out on SDA/D0.
+
+compatible: "shenge,sh8601"
+
+include: ["spi-device.yaml", "shenge,sh8601-common.yaml"]
+
+examples:
+  - |
+    #include <zephyr/dt-bindings/display/panel.h>
+
+    &spi2 {
+      sh8601@0 {
+        compatible = "shenge,sh8601";
+        reg = <0>;
+        spi-max-frequency = <40000000>;
+        width = <368>;
+        height = <448>;
+        pixel-format = <PANEL_PIXEL_FORMAT_RGB_565X>;
+      };
+    };

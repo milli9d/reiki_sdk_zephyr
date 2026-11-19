@@ -1,0 +1,23 @@
+# Copyright (c) 2026 Milind Singh
+# SPDX-License-Identifier: Apache-2.0
+
+config MSPI_ESP32
+	bool "ESP32 GPSPI MSPI controller driver"
+	default y
+	depends on MSPI
+	depends on DT_HAS_ESPRESSIF_ESP32_MSPI_ENABLED
+	select PINCTRL
+	select MSPI_DMA if $(dt_compat_any_has_prop,$(DT_COMPAT_ESPRESSIF_ESP32_MSPI),dmas)
+	help
+	  Enable the MSPI controller driver for the ESP32 general purpose SPI
+	  (GPSPI) peripheral, with single, dual and quad line phases. Transfers
+	  requesting MSPI_DMA use GDMA when the controller node has dmas.
+
+config MSPI_ESP32_INTERRUPT
+	bool "Interrupt-driven DMA completion"
+	default y
+	depends on MSPI_ESP32
+	help
+	  Sleep on the transaction done interrupt while DMA transfers run,
+	  instead of polling, so other threads get the CPU. Short PIO
+	  transactions are always polled.

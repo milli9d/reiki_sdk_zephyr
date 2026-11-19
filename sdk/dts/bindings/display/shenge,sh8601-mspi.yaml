@@ -1,0 +1,30 @@
+# Copyright (c) 2026 Milind Singh
+# SPDX-License-Identifier: Apache-2.0
+
+description: |
+  SH8601 AMOLED display controller on an MSPI bus.
+
+  Commands are written as opcode 0x02 + {0x00, CMD, 0x00} on one line.
+  Pixel data uses mspi-io-mode: MSPI_IO_MODE_SINGLE writes with opcode 0x02
+  on one line, MSPI_IO_MODE_QUAD_1_1_4 writes with opcode 0x32 and the data
+  phase on four lines.
+
+compatible: "shenge,sh8601"
+
+include: ["mspi-device.yaml", "shenge,sh8601-common.yaml"]
+
+examples:
+  - |
+    #include <zephyr/dt-bindings/display/panel.h>
+
+    &spi2 {
+      sh8601@0 {
+        compatible = "shenge,sh8601";
+        reg = <0>;
+        mspi-max-frequency = <40000000>;
+        mspi-io-mode = "MSPI_IO_MODE_QUAD_1_1_4";
+        width = <368>;
+        height = <448>;
+        pixel-format = <PANEL_PIXEL_FORMAT_RGB_565X>;
+      };
+    };

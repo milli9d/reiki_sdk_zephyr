@@ -1,0 +1,35 @@
+/*
+ * Copyright (c) 2026 Milind Singh
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Run the MSPI API test on GPSPI2 driven by the espressif,esp32-mspi
+ * controller. No device needs to be wired up: the test only exercises
+ * the configuration and bus ownership calls.
+ */
+
+/ {
+	aliases {
+		mspi0 = &spi2;
+	};
+};
+
+&spi2 {
+	compatible = "espressif,esp32-mspi";
+	clock-frequency = <DT_FREQ_M(80)>;
+	dmas = <&dma 2>, <&dma 3>;
+	dma-names = "rx", "tx";
+	status = "okay";
+
+	mspi_device: mspi_device@0 {
+		compatible = "zephyr,emul-device-mspi";
+		reg = <0x0>;
+		mspi-max-frequency = <DT_FREQ_M(40)>;
+		mspi-io-mode = "MSPI_IO_MODE_QUAD_1_1_4";
+		status = "okay";
+	};
+};
+
+&dma {
+	status = "okay";
+};

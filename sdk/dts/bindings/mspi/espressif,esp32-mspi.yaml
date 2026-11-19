@@ -1,0 +1,62 @@
+# Copyright (c) 2026 Milind Singh
+# SPDX-License-Identifier: Apache-2.0
+
+description: |
+  ESP32 general purpose SPI (GPSPI) peripheral used as an MSPI controller.
+
+  The command, address, dummy and data phases of an MSPI transfer map onto
+  the native GPSPI phases, each with its own line count (1, 2 or 4), so
+  modes such as MSPI_IO_MODE_QUAD_1_1_4 run as single hardware transactions.
+  Transfers are always half-duplex.
+
+  Reuse an existing SPI node by overriding its compatible:
+
+    &spi2 {
+      compatible = "espressif,esp32-mspi";
+      pinctrl-0 = <&mspi2_default>;
+      pinctrl-names = "default";
+      #address-cells = <1>;
+      #size-cells = <0>;
+      status = "okay";
+    };
+
+compatible: "espressif,esp32-mspi"
+
+include: [mspi-controller.yaml, pinctrl-device.yaml]
+
+properties:
+  reg:
+    required: true
+
+  clocks:
+    required: true
+
+  interrupts:
+    required: true
+
+  pinctrl-0:
+    required: true
+
+  pinctrl-names:
+    required: true
+
+  dma-host:
+    type: int
+    required: true
+    description: GPSPI host index, 0 -> SPI2 (FSPI), 1 -> SPI3.
+
+  use-iomux:
+    type: boolean
+    description: |
+      Pins are routed through IO_MUX rather than the GPIO matrix, which
+      allows clock rates above 40 MHz and changes input timing compensation.
+
+  cs-setup-time:
+    type: int
+    default: 0
+    description: Chip select setup time in SPI clock cycles.
+
+  cs-hold-time:
+    type: int
+    default: 0
+    description: Chip select hold time in SPI clock cycles.

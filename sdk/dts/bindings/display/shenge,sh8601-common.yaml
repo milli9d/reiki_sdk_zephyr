@@ -1,0 +1,38 @@
+# Copyright (c) 2026 Milind Singh
+# SPDX-License-Identifier: Apache-2.0
+
+title: SH8601 AMOLED display controller
+
+include: ["display-controller.yaml"]
+
+properties:
+  reset-gpios:
+    type: phandle-array
+    description: |
+      RESX pin of the controller. The controller treats this as an
+      active-low signal, so describe it as GPIO_ACTIVE_LOW. If absent, a
+      software reset is issued instead.
+
+  pixel-format:
+    type: int
+    default: 32
+    enum:
+      - 1  # PANEL_PIXEL_FORMAT_RGB_888
+      - 32 # PANEL_PIXEL_FORMAT_RGB_565X
+    description: |
+      Initial pixel format. The controller expects 16-bit pixels most
+      significant byte first, which is PIXEL_FORMAT_RGB_565X in Zephyr.
+
+  x-offset:
+    type: int
+    default: 0
+    description: Column offset in pixels of the panel within controller memory.
+
+  y-offset:
+    type: int
+    default: 0
+    description: Row offset in pixels of the panel within controller memory.
+
+  red-blue-swap:
+    type: boolean
+    description: Panel is wired BGR; set the BGR bit in the address mode register.

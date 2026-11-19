@@ -38,7 +38,7 @@ BraceWrapping:
   AfterNamespace: false
   AfterObjCDeclaration: true
   AfterStruct: false
-  AfterUnion: true
+  AfterUnion: false
   AfterExternBlock: false
   BeforeCatch: true
   BeforeElse: false

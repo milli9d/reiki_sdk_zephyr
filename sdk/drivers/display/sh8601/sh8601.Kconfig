@@ -1,0 +1,11 @@
+# Copyright (c) 2026 Milind Singh
+# SPDX-License-Identifier: Apache-2.0
+
+config SH8601
+	bool "SH8601 AMOLED display driver"
+	default y
+	depends on DT_HAS_SHENGE_SH8601_ENABLED
+	select SPI if $(dt_compat_on_bus,$(DT_COMPAT_SHENGE_SH8601),spi)
+	select MSPI if $(dt_compat_on_bus,$(DT_COMPAT_SHENGE_SH8601),mspi)
+	help
+	  Enable driver for the SH8601 AMOLED display controller.

@@ -38,14 +38,21 @@
     };
 
     
+    /*
+     * SH8601 AMOLED QSPI: SCLK=GPIO11, CS=GPIO12, D0..D3=GPIO4..7.
+     * Data lines are bidirectional (SIO0..3 = FSPID/Q/WP/HD); the
+     * peripheral drives output enable per phase.
+     */
     spim2_default: spim2_default {
         group1 {
-            pinmux = <SPIM2_MISO_GPIO46>,
-            <SPIM2_SCLK_GPIO40>,
-            <SPIM2_CSEL_GPIO42>;
+            pinmux = <SPIM2_SCLK_GPIO11>,
+            <SPIM2_CSEL_GPIO12>;
         };
         group2 {
-            pinmux = <SPIM2_MOSI_GPIO45>;
+            pinmux = <ESP32_PINMUX(4, ESP_FSPID_IN, ESP_FSPID_OUT)>,
+            <ESP32_PINMUX(5, ESP_FSPIQ_IN, ESP_FSPIQ_OUT)>,
+            <ESP32_PINMUX(6, ESP_FSPIWP_IN, ESP_FSPIWP_OUT)>,
+            <ESP32_PINMUX(7, ESP_FSPIHD_IN, ESP_FSPIHD_OUT)>;
             output-low;
         };
     };
